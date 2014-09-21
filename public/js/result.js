@@ -1,4 +1,4 @@
-var oFeedList = new sap.m.List("oFeedItemList", {
+ var oFeedList = new sap.m.List("oFeedItemList", {
         mode: "SingleSelectMaster",
         //showSeparators: "None",
     });

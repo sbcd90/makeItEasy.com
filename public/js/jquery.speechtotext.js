@@ -23,7 +23,7 @@
 	};
 
 	$.speechToText.defaultOptions = {
-		inputResetClass: null
+		inputResetClass: null 
 	};
 
 	$.fn.speechToText = function(options) {
