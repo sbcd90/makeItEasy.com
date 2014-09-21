@@ -1,114 +1,45 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="css/jdapi.min.css" type="text/css">
-            <script type="text/javascript" src="js/jdapi.min.js"></script>
-            <!--script type="text/javascript" src="js/jquery-1.8.3.js"></script>
-            <script type="text/javascript" src="js/jquery-ui.js"></script>
-            <script type="text/javascript" src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js" data-sap-ui-libs="sap.ui.commons, sap.m"></script-->
-            <script type="text/javascript">
-                var map = null;
-                var centerLat = null;
-                var centerLong = null;
-                
-                
-                var init = function(){
-                    var showPosition = function(position){
-                        centerLat = position.coords.latitude;
-                        centerLong = position.coords.longitude;
-                        var xmlhttp = new XMLHttpRequest();
-                        xmlhttp.open('GET','/getCab?centerlat=' + centerLat + '&centerlong=' + centerLong,true);
-                        xmlhttp.onreadystatechange = function(){
-                            if(xmlhttp.readyState==4 && xmlhttp.status==200){
-                                var mrkrArr = [];
-                                var map = Jdmap.init('map',[parseFloat(centerLat),parseFloat(centerLong)]);
-                                var centerMarker = L.marker([parseFloat(centerLat),parseFloat(centerLong)]);
-                                centerMarker.bindPopup("Your current location");
-                                mrkrArr.push(centerMarker);
-                                
-                                //tmp ola mark
-                                var olaLoc = L.marker([parseFloat(centerLat),parseFloat(centerLong) - 0.01]);
-                                olaLoc.bindPopup("Nearest Ola Cab");
-                                olaLoc.setIcon(L.icon({iconUrl: '/img/ola.png',iconAnchor: [10, 30],shadowUrl: this.imageHost + "/images/marker-shadow.png"}));
-                                mrkrArr.push(olaLoc);
-                                
-                                var xmlhttprequest = new XMLHttpRequest();
-                                xmlhttprequest.open('GET','/getPracto?location=bangalore',true);
-                                xmlhttprequest.onreadystatechange = function(){
-                                    if(xmlhttprequest.readyState==4 && xmlhttprequest.status==200){
-                                        var responseJSON = JSON.parse(xmlhttprequest.responseText);
-                                        for(var count=0;count<responseJSON.doctors.length;count++){
-                                            var doctor_relations = responseJSON.doctors[count].relations;
-                                            for(places=0;places<doctor_relations.length;places++){
-                                                var relation = doctor_relations[places];
-                                                var latitude = relation["practice"].latitude;
-                                                var longitude = relation["practice"].longitude;
-                                                var locality = undefined;
-                                                if(relation["practice"].locality!=undefined)
-                                                    locality = relation["practice"].locality.name;
-                                                var name = relation["practice"].name;
-                                                var street = relation["practice"].street_address;
-                                                if(latitude!=undefined && longitude!=undefined){
-                                                    var oMarker = L.marker([parseFloat(latitude),parseFloat(longitude)]);
-                                                    var text = "name: " + name;
-                                                    if(locality!=undefined)
-                                                        text = text + "<br>locality: " + locality;
-                                                    if(street!=undefined)
-                                                        text = text + "<br>street: " + street;
-                                                    oMarker.bindPopup(text);
-                                                    mrkrArr.push(oMarker);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    L.layerGroup(mrkrArr).addTo(map);
-                                };
-                                xmlhttprequest.send();
-                            }
-                        };
-                        xmlhttp.send();
-                    };
-                    if(navigator.geolocation){
-                        navigator.geolocation.getCurrentPosition(showPosition);
-                    }else{
-                        console.log("GeoLocation not supported by browser");
-                    }
-                };
-            </script>
-    </head>
-<body id="content" onload="init()">
+<body id="content" >
+  <!--   onload="init()" -->
     
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/login.js"></script>
 <script type="text/javascript" src="js/Chart.js"></script>
-   
-<script type="text/javascript" src="js/jquery.easing.js"></script>
-<script type="text/javascript" src="js/jquery.ulslide.js"></script>
+ <script type="text/javascript" src="js/jquery.easing.js"></script>
+ <script type="text/javascript" src="js/jquery.ulslide.js"></script>
   <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
     <script type="text/javascript" src="js/jquery-ui.js"></script>
+     <link rel="stylesheet" href="css/jdapi.min.css" type="text/css">
+            <script type="text/javascript" src="js/jdapi.min.js"></script>
     <link type="text/css" href="css/style.css" rel="stylesheet" />
     <script type="text/javascript" src="js/jquery.ui.chatbox.js"></script>
-<link href='http://fonts.googleapis.com/css?family=Carrois+Gothic+SC' rel='stylesheet' type='text/css'>
+ <link href='http://fonts.googleapis.com/css?family=Carrois+Gothic+SC' rel='stylesheet' type='text/css'>
   <script id="sap-ui-bootstrap"
    src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js"
    data-sap-ui-theme="sap_bluecrystal"
    data-sap-ui-libs="sap.ui.commons, sap.m"></script>
-   <div id="divs" style="height:20%;">  </div>
+   <div id="divs"> <h2 class="logo">MakeItEasy</h2>
+<h2 class = "com">.com</h2>
+    </div>
 <script type="text/javascript">
 
 responseJSON = 0;
 var oSearch = new sap.ui.commons.SearchField("simpleSearch", {
+    placeHolder: 'Search for Doctors names, places',
     enableListSuggest: false,
     search: function(oEvent){
-       query= oEvent.getParameter("query");
+       window.query= oEvent.getParameter("query");
        var json;
+
+       init();
 var xmlhttprequest = new XMLHttpRequest(); //location='+query
-xmlhttprequest.open('GET','/getPracto?location='+query,false);
+xmlhttprequest.open('GET','/getPracto?location='+window.query,false);
 
 xmlhttprequest.send();
-responseJSON = JSON.parse(xmlhttprequest.responseText);
+ responseJSON = JSON.parse(xmlhttprequest.responseText);
 
-
-var oFeedList = new sap.m.List({
+sap.ui.getCore().byId("feedlist ")
+var oFeedList = new sap.m.List("feedlist",{
         mode: "SingleSelectMaster",
         //showSeparators: "None",
     });
@@ -161,7 +92,7 @@ var oFeedList = new sap.m.List({
         chunks : [ {
           text : responseJSON.doctors[i].relations[0].practice.practice_type +' : '+responseJSON.doctors[i].relations[0].practice.name+'\n  Adress: '+responseJSON.doctors[i].relations[0].practice.street_address,
       sender : responseJSON.doctors[i].name,
-
+ 
       info: 'specialization : '+responseJSON.doctors[i].specializations[0].subspecialization.subspecialization,
       timestamp : '',
       icon: pic
@@ -177,8 +108,9 @@ arr.push(feedData.chunks[0]);
 oJsonModel.setData(obj);
 bindFeedListData(obj, oFeedListItemTemplate, oFeedList);
 
-
-
+$('.main').css("display", "block");
+$('.main1').css("display", "block");
+ 
     
 
 /*for(var i=0; i < json.data.length; i++)
@@ -222,7 +154,7 @@ var c = result;
 
 
 
-<div class="main">  
+ <div class="main">  
      <div class="wrap">  
          <div class="column_right">
           <div id="menu_box_messages">
@@ -235,13 +167,88 @@ var c = result;
 
 
 
-    <div id="map" style="width: 800px; height: 500px; float: left; margin-left: 20px; margin-top: 20px; position: relative;" class="leaflet-container leaflet-fade-anim" tabindex="0"></div>
-    <!--script type="text/javascript">
+<div class="main1">
+<div class="wrap">
+<div class="column_left">
+<div id="menu_box_feed">
+<div id="map" style="width: 693px; height: 600px; float: left; margin-left: 20px;margin-bottom: 20px; margin-top: 20px; position: relative;" class="leaflet-container leaflet-fade-anim" tabindex="0">
+  <script type="text/javascript">
+                var map = null;
+                var centerLat = null;
+                var centerLong = null;
+                
+                
+                var init = function(){
+                    var showPosition = function(position){
+                        centerLat = position.coords.latitude;
+                        centerLong = position.coords.longitude;
+                        var xmlhttp = new XMLHttpRequest();
+                        xmlhttp.open('GET','/getCab?centerlat=' + centerLat + '&centerlong=' + centerLong,true);
+                        xmlhttp.send();
+                        xmlhttp.onreadystatechange = function(){
+                            if(xmlhttp.readyState==4 && xmlhttp.status==200){
+                                var mrkrArr = [];
+                                var map = Jdmap.init('map',[parseFloat(centerLat),parseFloat(centerLong)]);
+                                var centerMarker = L.marker([parseFloat(centerLat),parseFloat(centerLong)]);
+                                centerMarker.bindPopup("Your current location");
+                                mrkrArr.push(centerMarker);
+                                
+                                //tmp ola mark
+                                var olaLoc = L.marker([parseFloat(centerLat),parseFloat(centerLong) - 0.01]);
+                                olaLoc.bindPopup("Cab deatils <br> Driver Number: 8880195191 <br> Liscense : 893292922");
+                                olaLoc.setIcon(L.icon({iconUrl: '/img/ola.png',iconAnchor: [10, 30],shadowUrl: this.imageHost + "/images/marker-shadow.png"}));
+                                mrkrArr.push(olaLoc);
+                                
+                                var xmlhttprequest = new XMLHttpRequest();
+                                xmlhttprequest.open('GET','/getPracto?location='+window.query,true);
+                                xmlhttprequest.send();
+                                xmlhttprequest.onreadystatechange = function(){
+                                    if(xmlhttprequest.readyState==4 && xmlhttprequest.status==200){
+                                        var responseJSON = JSON.parse(xmlhttprequest.responseText);
+                                        for(var count=0;count<responseJSON.doctors.length;count++){
+                                            var doctor_relations = responseJSON.doctors[count].relations;
+                                            for(places=0;places<doctor_relations.length;places++){
+                                                var relation = doctor_relations[places];
+                                                var latitude = relation["practice"].latitude;
+                                                var longitude = relation["practice"].longitude;
+                                                var locality = undefined;
+                                                if(relation["practice"].locality!=undefined)
+                                                    locality = relation["practice"].locality.name;
+                                                var name = relation["practice"].name;
+                                                var street = relation["practice"].street_address;
+                                                if(latitude!=undefined && longitude!=undefined){
+                                                    var oMarker = L.marker([parseFloat(latitude),parseFloat(longitude)]);
+                                                    var text = "name: " + name;
+                                                    if(locality!=undefined)
+                                                        text = text + "<br>locality: " + locality;
+                                                    if(street!=undefined)
+                                                        text = text + "<br>street: " + street;
+                                                    oMarker.bindPopup(text);
+                                                    mrkrArr.push(oMarker);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    L.layerGroup(mrkrArr).addTo(map);
+                                };
+                                xmlhttprequest.send();
+                            }
+                        };
+                        xmlhttp.send();
+                    };
+                    if(navigator.geolocation){
+                        navigator.geolocation.getCurrentPosition(showPosition);
+                    }else{
+                        console.log("GeoLocation not supported by browser");
+                    }
+                };
+            </script>
+</div>
+</div>
+</div>
+</div>
 
-/*var t = new sap.m.Text({text:"lol"});
-t.placeAt("menu_box_feed");*/
-
-    </script-->
+</div>
 
 
 
