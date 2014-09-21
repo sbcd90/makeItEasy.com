@@ -14,6 +14,10 @@ technologies used
 =================
 
 - node.js
-- [practo api][https://developers.practo.com/]
-- [justDial maps api][http://hack2014.justdial.com/docs/#!index.md]
-- [ola Cabs api][http://docs.console.olacabs.com/ola]
+- [practo api][1]
+- [justDial maps api][2]
+- [ola Cabs api][3]
+
+[1]: https://developers.practo.com/
+[2]: http://hack2014.justdial.com/docs/#!index.md
+[3]: http://docs.console.olacabs.com/ola
