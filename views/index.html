@@ -18,137 +18,129 @@
    src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js"
    data-sap-ui-theme="sap_bluecrystal"
    data-sap-ui-libs="sap.ui.commons, sap.m"></script>
-   <div id="divs"> <h2 class="logo">MakeItEasy</h2>
-<h2 class = "com">.com</h2>
+   <div id="divs" width="10%"> 
+       <h2 class="logo" style="display: block;">MakeItEasy</h2>
+       <h2 class = "com" style="display: block;">.com</h2>
     </div>
+    <div id="divs1" style="display: block;"></div>
+    <div id="divs2" style="display: block;"></div>
 <script type="text/javascript">
+    
 
 responseJSON = 0;
 var oSearch = new sap.ui.commons.SearchField("simpleSearch", {
     placeHolder: 'Search for Doctors names, places',
     enableListSuggest: false,
     search: function(oEvent){
-       window.query= oEvent.getParameter("query");
-       var json;
+        window.query= oEvent.getParameter("query");
+        var json;
 
-       init();
-var xmlhttprequest = new XMLHttpRequest(); //location='+query
-xmlhttprequest.open('GET','/getPracto?location='+window.query,false);
-
-xmlhttprequest.send();
- responseJSON = JSON.parse(xmlhttprequest.responseText);
-
-sap.ui.getCore().byId("feedlist ")
-var oFeedList = new sap.m.List("feedlist",{
-        mode: "SingleSelectMaster",
-        //showSeparators: "None",
-    });
-
-    
-    var fnOpenPopup = function(oControlEvent) {
-      oPopover.openBy(oControlEvent.getParameters().domRef);
-    };
-   
-    var oFeedListItemTemplate = new sap.m.FeedListItem({
-      type: sap.m.ListType.Active,   
-      icon : "{icon}",
-      activeIcon : "{activeIcon}",
-      text : "{text}",
-      sender : "{sender}",
-      showIcon : "{showIcon}",
-      senderActive: "{senderActive}",
-      iconActive: "{iconActive}",
-      info: "{info}",
-      timestamp : "{timestamp}",
-      maxCharacters : 100,
-      senderPress : fnOpenPopup,
-      iconPress : fnOpenPopup
-    });
-
-    function bindFeedListData(data, itemTemplate, list)
-    {
-      var oModel = new sap.ui.model.json.JSONModel();
-      // set the data for the model
-      oModel.setData(data);
-      // set the model to the list
-      list.setModel(oModel);
-
-      // bind Aggregation
-      list.bindAggregation("items", "/chunks", itemTemplate);
+        init();
+        sap.ui.getCore().byId("feedlist ");
     }
-    var arr = new Array();
-    jQuery.sap.require("sap.ui.core.IconPool");
-    var sURI = sap.ui.core.IconPool.getIconURI("personnel-view");
-    oJsonModel = new sap.ui.model.json.JSONModel();
-        if(responseJSON != 0){
-    for(var i=0;i<responseJSON.doctors.length;i++){
-
-        if(responseJSON.doctors[i].photos.length!=0)
-            var pic = responseJSON.doctors[i].photos[0].photo_url;
-        else
-            var pic = "images/user.png"
-    
-    feedData = {
-        chunks : [ {
-          text : responseJSON.doctors[i].relations[0].practice.practice_type +' : '+responseJSON.doctors[i].relations[0].practice.name+'\n  Adress: '+responseJSON.doctors[i].relations[0].practice.street_address,
-      sender : responseJSON.doctors[i].name,
- 
-      info: 'specialization : '+responseJSON.doctors[i].specializations[0].subspecialization.subspecialization,
-      timestamp : '',
-      icon: pic
-
-        }]
-      };
-
-arr.push(feedData.chunks[0]);
-  }
-}
-   var obj = new Object({chunks: arr}); 
-
-oJsonModel.setData(obj);
-bindFeedListData(obj, oFeedListItemTemplate, oFeedList);
-
-$('.main').css("display", "block");
-$('.main1').css("display", "block");
- 
-    
-
-/*for(var i=0; i < json.data.length; i++)
-{*/
-
-//$('.main').append($('.wrap'));
-oFeedList.placeAt("menu_box_messages");
-/*}
-};*/
-
-
-
-
-}
-    
 });
+    
+oSearch.placeAt('divs1');    
+    
+var onChange = function(oEvt){
+    debugger;
+    
+    if(window.query==undefined)
+        alert("No Search term found");
+    else{
+        var xmlhttprequest = new XMLHttpRequest(); //location='+query
+        xmlhttprequest.open('GET','/getPracto?paramName=' + oEvt.getParameter("newValue") + '&paramVal=' + window.query,false);
 
-oSearch.placeAt("divs");
-
-/*jax({   
-        type: 'GET',
-       url:  'https:api.practo.com/doctors/?page=1',
-        contentType: 'application/json; charset=utf-8',
-        beforeSend: function(req){
-            req.setRequestHeader("X-CLIENT-ID","f36c4c66-7040-4a23-ac52-fd05a7d3896e");
-            req.setRequestHeader("X-API-KEY","KIseu5ziWWiYWYdyF8Gkq+hbZks=");
-        },
-        data: json,
-        dataType: 'json',
-        cache: false,
-        async: false,
-        success: AjaxSucceeded,
+        xmlhttprequest.send();
+        responseJSON = JSON.parse(xmlhttprequest.responseText);
         
-    });*/
+        var oFeedList = new sap.m.List("feedlist",{
+                            mode: "SingleSelectMaster",
+                            //showSeparators: "None",
+                        });
 
-/*function AjaxSucceeded(result){
-var c = result;
-}*/
+    
+        var fnOpenPopup = function(oControlEvent) {
+                            oPopover.openBy(oControlEvent.getParameters().domRef);
+                          };
+   
+        var oFeedListItemTemplate = new sap.m.FeedListItem({
+                                            type: sap.m.ListType.Active,   
+                                            icon : "{icon}",
+                                            activeIcon : "{activeIcon}",
+                                            text : "{text}",
+                                            sender : "{sender}",
+                                            showIcon : "{showIcon}",
+                                            senderActive: "{senderActive}",
+                                            iconActive: "{iconActive}",
+                                            info: "{info}",
+                                            timestamp : "{timestamp}",
+                                            maxCharacters : 100,
+                                            senderPress : fnOpenPopup,
+                                            iconPress : fnOpenPopup
+                                    });
+
+        function bindFeedListData(data, itemTemplate, list){
+            var oModel = new sap.ui.model.json.JSONModel();
+            // set the data for the model
+            oModel.setData(data);
+            // set the model to the list
+            list.setModel(oModel);
+
+            // bind Aggregation
+            list.bindAggregation("items", "/chunks", itemTemplate);
+        }
+    
+        var arr = new Array();
+        jQuery.sap.require("sap.ui.core.IconPool");
+        var sURI = sap.ui.core.IconPool.getIconURI("personnel-view");
+        oJsonModel = new sap.ui.model.json.JSONModel();
+        if(responseJSON != 0){
+            for(var i=0;i<responseJSON.doctors.length;i++){
+
+                if(responseJSON.doctors[i].photos.length!=0)
+                    var pic = responseJSON.doctors[i].photos[0].photo_url;
+                else
+                    var pic = "images/user.png"
+    
+                feedData = {
+                            chunks : [ {
+                                text : responseJSON.doctors[i].relations[0].practice.practice_type +' : '+responseJSON.doctors[i].relations[0].practice.name+'\n  Adress: '+responseJSON.doctors[i].relations[0].practice.street_address,
+                                sender : responseJSON.doctors[i].name,
+ 
+                                info: 'specialization : '+responseJSON.doctors[i].specializations[0].subspecialization.subspecialization,
+                                timestamp : '',
+                                icon: pic
+                            }]
+                        };
+
+                arr.push(feedData.chunks[0]);
+            }
+        }
+        var obj = new Object({chunks: arr}); 
+
+        oJsonModel.setData(obj);
+        bindFeedListData(obj, oFeedListItemTemplate, oFeedList);
+
+        $('.main').css("display", "block");
+        $('.main1').css("display", "block");
+ 
+        oFeedList.placeAt("menu_box_messages");
+    }
+        
+};
+    
+var oDropDownBox = new sap.ui.commons.DropdownBox({
+                        displaySecondaryValues : true,
+                        items : [
+                            new sap.ui.core.ListItem({text : "city"}),
+                            new sap.ui.core.ListItem({text : "locality"}),
+                            new sap.ui.core.ListItem({text : "speciality"})
+                        ],
+                        change : onChange
+                    });   
+    
+oDropDownBox.placeAt('divs2');    
 
 </script>
 
@@ -171,7 +163,7 @@ var c = result;
 <div class="wrap">
 <div class="column_left">
 <div id="menu_box_feed">
-<div id="map" style="width: 693px; height: 600px; float: left; margin-left: 20px;margin-bottom: 20px; margin-top: 20px; position: relative;" class="leaflet-container leaflet-fade-anim" tabindex="0">
+<div id="map" style="width: 94%; height: 600px; float: left; margin-left: 20px;margin-bottom: 20px; margin-top: 20px; position: relative;" class="leaflet-container leaflet-fade-anim" tabindex="0">
   <script type="text/javascript">
                 var map = null;
                 var centerLat = null;

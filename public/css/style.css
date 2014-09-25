@@ -5,22 +5,29 @@
   font-weight: 300;
   src: local('Open Sans'), local('OpenSans'), url('http://themes.googleusercontent.com/static/fonts/opensans/v5/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
 }
-.sapUiTfBrd {
+.sapUiTfBrd{
 padding: 2px 5px 3px 5px;
 height: 22px;
-box-sizing: border-box;
--moz-box-sizing: border-box;
 border-width: 1px;
 height: 5em;
 border-radius: 14px;
 width: 80em;
-margin-left: 198%;
-margin-top: 37%;
 border: 4px solid rgb(223, 140, 16);
-background: rgb(217, 219, 241);
+background: rgb(217, 219, 241);   
 }
 
-.sapUiSearchFieldIco {
+#divs1,#divs2 {
+padding: 2px 5px 3px 5px;
+height: 22px;
+border-width: 1px;
+height: 5em;
+border-radius: 14px;
+width: 80em;
+padding-top: 2%;
+padding-left: 20%;    
+}
+
+.sapUiSearchFieldIco,.sapUiTfComboIcon {
 height: 54px;
 margin-top: 0;
 width: 81px;
@@ -63,7 +70,7 @@ font-weight: lighter;
 
 
  /* reset */
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+html,body,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
 article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
 ol,ul{list-style:none;margin:0;padding:0;}
 blockquote,q{quotes:none;}
