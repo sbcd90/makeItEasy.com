@@ -21,3 +21,8 @@ technologies used
 [1]: https://developers.practo.com/
 [2]: http://hack2014.justdial.com/docs/#!index.md
 [3]: http://docs.console.olacabs.com/ola
+
+recent changes
+==============
+
+- support for categories based on practo api
