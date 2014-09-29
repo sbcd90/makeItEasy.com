@@ -27,20 +27,8 @@
 <script type="text/javascript">
     
 
-responseJSON = 0;
-var oSearch = new sap.ui.commons.SearchField("simpleSearch", {
-    placeHolder: 'Search for Doctors names, places',
-    enableListSuggest: false,
-    search: function(oEvent){
-        window.query= oEvent.getParameter("query");
-        var json;
-
-        init();
-        sap.ui.getCore().byId("feedlist ");
-    }
-});
-    
-oSearch.placeAt('divs1');    
+responseJSON = 0;   
+window.newValue = 'city';    
     
 var onChange = function(oEvt){
     debugger;
@@ -49,7 +37,7 @@ var onChange = function(oEvt){
         alert("No Search term found");
     else{
         var xmlhttprequest = new XMLHttpRequest(); //location='+query
-        xmlhttprequest.open('GET','/getPracto?paramName=' + oEvt.getParameter("newValue") + '&paramVal=' + window.query,false);
+        xmlhttprequest.open('GET','/getPracto?paramName=' + window.newValue + '&paramVal=' + window.query,false);
 
         xmlhttprequest.send();
         responseJSON = JSON.parse(xmlhttprequest.responseText);
@@ -130,6 +118,18 @@ var onChange = function(oEvt){
         
 };
     
+var oSearch = new sap.ui.commons.SearchField("simpleSearch", {
+    placeHolder: 'Search for Doctors names, places',
+    enableListSuggest: false,
+    search: function(oEvent){
+        window.query= oEvent.getParameter("query");
+        init();
+        onChange();
+        sap.ui.getCore().byId("feedlist ");
+    }
+});    
+oSearch.placeAt('divs1');     
+    
 var oDropDownBox = new sap.ui.commons.DropdownBox({
                         displaySecondaryValues : true,
                         items : [
@@ -137,7 +137,9 @@ var oDropDownBox = new sap.ui.commons.DropdownBox({
                             new sap.ui.core.ListItem({text : "locality"}),
                             new sap.ui.core.ListItem({text : "speciality"})
                         ],
-                        change : onChange
+                        change : function(oEvt){
+                            window.newValue = oEvt.getParameter("newValue");
+                        }
                     });   
     
 oDropDownBox.placeAt('divs2');    
@@ -192,7 +194,7 @@ oDropDownBox.placeAt('divs2');
                                 mrkrArr.push(olaLoc);
                                 
                                 var xmlhttprequest = new XMLHttpRequest();
-                                xmlhttprequest.open('GET','/getPracto?location='+window.query,true);
+                                xmlhttprequest.open('GET','/getPracto?paramName=' + window.newValue + '&paramVal=' + window.query,true);
                                 xmlhttprequest.send();
                                 xmlhttprequest.onreadystatechange = function(){
                                     if(xmlhttprequest.readyState==4 && xmlhttprequest.status==200){
