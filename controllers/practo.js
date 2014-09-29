@@ -10,7 +10,7 @@ exports.getPracto = function(req,res){
     console.log(paramVal);
     var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('GET','https://api.practo.com/doctors?' + paramName + '=' + paramVal + '&with_relations=true',false);
+    xmlhttp.open('GET','https://api.practo.com/doctors?' + paramName + '=' + paramVal + '&city=Bangalore&with_relations=true',false);
     xmlhttp.setRequestHeader("X-API-KEY","qPyOrdb7NEsXfvJ4CHyDisLa+ds=");
     xmlhttp.setRequestHeader("X-CLIENT-ID","27979c0c-52ac-4e33-8a23-710042499d7f");
     xmlhttp.send();

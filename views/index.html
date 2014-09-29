@@ -26,9 +26,29 @@
     <div id="divs2" style="display: block;"></div>
 <script type="text/javascript">
     
+    var initialize = function(position){
+        var centerLat = null;
+                var centerLong = null;
+        if(position!=undefined){
+                            centerLat = position.coords.latitude;
+                            centerLong = position.coords.longitude;
+                            window.centerLat = centerLat;
+                            window.centerLong = centerLong;
+                        }
+                        else{
+                            centerLat = window.centerLat;
+                            centerLong = window.centerLong;
+                        }
+    };
+    if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(initialize);
+        }else{
+            console.log("GeoLocation not supported by browser");
+        }
+    
 
 responseJSON = 0;   
-window.newValue = 'city';    
+window.newValue = 'locality';    
     
 var onChange = function(oEvt){
     debugger;
@@ -42,7 +62,9 @@ var onChange = function(oEvt){
         xmlhttprequest.send();
         responseJSON = JSON.parse(xmlhttprequest.responseText);
         
-        var oFeedList = new sap.m.List("feedlist",{
+        if(sap.ui.getCore().byId("feedList")!=undefined)
+            sap.ui.getCore().byId("feedList").destroy();
+        var oFeedList = new sap.m.List("feedList",{
                             mode: "SingleSelectMaster",
                             //showSeparators: "None",
                         });
@@ -123,8 +145,8 @@ var oSearch = new sap.ui.commons.SearchField("simpleSearch", {
     enableListSuggest: false,
     search: function(oEvent){
         window.query= oEvent.getParameter("query");
-        init();
         onChange();
+        init();
         sap.ui.getCore().byId("feedlist ");
     }
 });    
@@ -133,7 +155,6 @@ oSearch.placeAt('divs1');
 var oDropDownBox = new sap.ui.commons.DropdownBox({
                         displaySecondaryValues : true,
                         items : [
-                            new sap.ui.core.ListItem({text : "city"}),
                             new sap.ui.core.ListItem({text : "locality"}),
                             new sap.ui.core.ListItem({text : "speciality"})
                         ],
@@ -168,21 +189,26 @@ oDropDownBox.placeAt('divs2');
 <div id="map" style="width: 94%; height: 600px; float: left; margin-left: 20px;margin-bottom: 20px; margin-top: 20px; position: relative;" class="leaflet-container leaflet-fade-anim" tabindex="0">
   <script type="text/javascript">
                 var map = null;
-                var centerLat = null;
-                var centerLong = null;
                 
                 
                 var init = function(){
-                    var showPosition = function(position){
-                        centerLat = position.coords.latitude;
-                        centerLong = position.coords.longitude;
+                        centerLat = window.centerLat;
+                        centerLong = window.centerLong;
                         var xmlhttp = new XMLHttpRequest();
                         xmlhttp.open('GET','/getCab?centerlat=' + centerLat + '&centerlong=' + centerLong,true);
                         xmlhttp.send();
                         xmlhttp.onreadystatechange = function(){
                             if(xmlhttp.readyState==4 && xmlhttp.status==200){
                                 var mrkrArr = [];
-                                var map = Jdmap.init('map',[parseFloat(centerLat),parseFloat(centerLong)]);
+                                var map = undefined;
+                                if(window.alreadyInitialized==undefined){
+                                    map = Jdmap.init('map',[parseFloat(centerLat),parseFloat(centerLong)]);
+                                    window.map = map;
+                                    window.alreadyInitialized = true;
+                                }
+                                else{
+                                    map = window.map;
+                                }
                                 var centerMarker = L.marker([parseFloat(centerLat),parseFloat(centerLong)]);
                                 centerMarker.bindPopup("Your current location");
                                 mrkrArr.push(centerMarker);
@@ -230,12 +256,6 @@ oDropDownBox.placeAt('divs2');
                         };
                         xmlhttp.send();
                     };
-                    if(navigator.geolocation){
-                        navigator.geolocation.getCurrentPosition(showPosition);
-                    }else{
-                        console.log("GeoLocation not supported by browser");
-                    }
-                }; 
             </script>
 </div>
 </div>
