@@ -117,12 +117,12 @@ var onChange = function(oEvt){
                             chunks : [ {
                                 text : responseJSON.doctors[i].relations[0].practice.practice_type +' : '+responseJSON.doctors[i].relations[0].practice.name+'\n  Adress: '+responseJSON.doctors[i].relations[0].practice.street_address,
                                 sender : responseJSON.doctors[i].name,
- 
-                                info: 'specialization : '+responseJSON.doctors[i].specializations[0].subspecialization.subspecialization,
                                 timestamp : '',
                                 icon: pic
                             }]
                         };
+                if(responseJSON.doctors[i].specializations[0]!=undefined)
+                    feedData.info = 'specialization : '+responseJSON.doctors[i].specializations[0].subspecialization.subspecialization;
 
                 arr.push(feedData.chunks[0]);
             }
@@ -194,67 +194,73 @@ oDropDownBox.placeAt('divs2');
                 var init = function(){
                         centerLat = window.centerLat;
                         centerLong = window.centerLong;
-                        var xmlhttp = new XMLHttpRequest();
-                        xmlhttp.open('GET','/getCab?centerlat=' + centerLat + '&centerlong=' + centerLong,true);
-                        xmlhttp.send();
-                        xmlhttp.onreadystatechange = function(){
-                            if(xmlhttp.readyState==4 && xmlhttp.status==200){
-                                var mrkrArr = [];
-                                var map = undefined;
-                                if(window.alreadyInitialized==undefined){
-                                    map = Jdmap.init('map',[parseFloat(centerLat),parseFloat(centerLong)]);
-                                    window.map = map;
-                                    window.alreadyInitialized = true;
-                                }
-                                else{
-                                    map = window.map;
-                                }
-                                var centerMarker = L.marker([parseFloat(centerLat),parseFloat(centerLong)]);
-                                centerMarker.bindPopup("Your current location");
-                                mrkrArr.push(centerMarker);
+                        var mrkrArr = [];
+                        var map = undefined;
+                        if(window.alreadyInitialized==undefined){
+                            map = Jdmap.init('map',[parseFloat(centerLat),parseFloat(centerLong)]);
+                            window.map = map;
+                            window.alreadyInitialized = true;
+                        }
+                        else{
+                            map = window.map;
+                        }
+                        var centerMarker = L.marker([parseFloat(centerLat),parseFloat(centerLong)]);
+                        centerMarker.bindPopup("Your current location");
+                        mrkrArr.push(centerMarker);
                                 
-                                //tmp ola mark
-                                var olaLoc = L.marker([parseFloat(centerLat),parseFloat(centerLong) - 0.01]);
-                                olaLoc.bindPopup("Cab deatils <br> Driver Number: 8880195191 <br> Liscense : 893292922");
-                                olaLoc.setIcon(L.icon({iconUrl: '/img/ola.png',iconAnchor: [10, 30],shadowUrl: this.imageHost + "/images/marker-shadow.png"}));
-                                mrkrArr.push(olaLoc);
+                        //tmp ola mark
+                        var olaLoc = L.marker([parseFloat(centerLat),parseFloat(centerLong) - 0.01]);
+                        olaLoc.bindPopup("Cab deatils <br> Driver Number: 8880195191 <br> Liscense : 893292922");
+                        olaLoc.setIcon(L.icon({iconUrl: '/img/ola.png',iconAnchor: [10, 30],shadowUrl: this.imageHost + "/images/marker-shadow.png"}));
+                        mrkrArr.push(olaLoc);
                                 
-                                var xmlhttprequest = new XMLHttpRequest();
-                                xmlhttprequest.open('GET','/getPracto?paramName=' + window.newValue + '&paramVal=' + window.query,true);
-                                xmlhttprequest.send();
-                                xmlhttprequest.onreadystatechange = function(){
-                                    if(xmlhttprequest.readyState==4 && xmlhttprequest.status==200){
-                                        var responseJSON = JSON.parse(xmlhttprequest.responseText);
-                                        for(var count=0;count<responseJSON.doctors.length;count++){
-                                            var doctor_relations = responseJSON.doctors[count].relations;
-                                            for(places=0;places<doctor_relations.length;places++){
-                                                var relation = doctor_relations[places];
-                                                var latitude = relation["practice"].latitude;
-                                                var longitude = relation["practice"].longitude;
-                                                var locality = undefined;
-                                                if(relation["practice"].locality!=undefined)
-                                                    locality = relation["practice"].locality.name;
-                                                var name = relation["practice"].name;
-                                                var street = relation["practice"].street_address;
-                                                if(latitude!=undefined && longitude!=undefined){
-                                                    var oMarker = L.marker([parseFloat(latitude),parseFloat(longitude)]);
-                                                    var text = "name: " + name;
-                                                    if(locality!=undefined)
-                                                        text = text + "<br>locality: " + locality;
-                                                    if(street!=undefined)
-                                                        text = text + "<br>street: " + street;
-                                                    oMarker.bindPopup(text);
-                                                    mrkrArr.push(oMarker);
-                                                }
-                                            }
+                        var xmlhttprequest = new XMLHttpRequest();
+                        xmlhttprequest.open('GET','/getPracto?paramName=' + window.newValue + '&paramVal=' + window.query,true);
+                        xmlhttprequest.send();
+                        xmlhttprequest.onreadystatechange = function(){
+                            if(xmlhttprequest.readyState==4 && xmlhttprequest.status==200){
+                                var responseJSON = JSON.parse(xmlhttprequest.responseText);
+                                for(var count=0;count<responseJSON.doctors.length;count++){
+                                    var doctor_relations = responseJSON.doctors[count].relations;
+                                    for(places=0;places<doctor_relations.length;places++){
+                                        var relation = doctor_relations[places];
+                                        var latitude = relation["practice"].latitude;
+                                        var longitude = relation["practice"].longitude;
+                                        var locality = undefined;
+                                        if(relation["practice"].locality!=undefined)
+                                            locality = relation["practice"].locality.name;
+                                        var name = relation["practice"].name;
+                                        var street = relation["practice"].street_address;
+                                        if(latitude!=undefined && longitude!=undefined){
+                                            var oMarker = L.marker([parseFloat(latitude),parseFloat(longitude)]);
+                                            var text = "name: " + name;
+                                            if(locality!=undefined)
+                                                text = text + "<br>locality: " + locality;
+                                            if(street!=undefined)
+                                                text = text + "<br>street: " + street;
+                                            var nextxmlhttprequest = new XMLHttpRequest();
+                                            nextxmlhttprequest.open('GET','/getCab?centerlat=' + centerLat + '&centerlong=' + centerLong + '&chamberlat=' + latitude + '&chamberlong=' + longitude,false);
+                                            nextxmlhttprequest.send();
+                                            var newJSON = JSON.parse(nextxmlhttprequest.responseText);
+                                            if(newJSON.currency.int_symbol!=undefined)
+                                                text = text + "<br>currency: " + newJSON.currency.int_symbol;
+                                            if(newJSON.distance!=undefined)
+                                                text = text + "<br>distance: " + newJSON.distance;
+                                            if(newJSON.metered_fare!=undefined)
+                                                text = text + "<br>metered fare: " + newJSON.metered_fare;
+                                            if(newJSON.initial_fare!=undefined)
+                                                text = text + "<br>initial fare: " + newJSON.initial_fare;
+                                            if(newJSON.total_fare!=undefined)
+                                                text = text + "<br>total fare: " + newJSON.total_fare;
+                                            oMarker.bindPopup(text);
+                                            mrkrArr.push(oMarker);
                                         }
                                     }
-                                    L.layerGroup(mrkrArr).addTo(map);
-                                };
-                                xmlhttprequest.send();
+                                }
                             }
+                            L.layerGroup(mrkrArr).addTo(map);
                         };
-                        xmlhttp.send();
+                        xmlhttprequest.send();
                     };
             </script>
 </div>
