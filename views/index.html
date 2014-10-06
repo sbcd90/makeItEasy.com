@@ -206,12 +206,13 @@ oDropDownBox.placeAt('divs2');
                         }
                         var centerMarker = L.marker([parseFloat(centerLat),parseFloat(centerLong)]);
                         centerMarker.bindPopup("Your current location");
+                        centerMarker.setIcon(L.icon({iconUrl: 'http://localhost:3000/images/marker-shadow.png',iconAnchor: [10, 30],shadowUrl: "http://localhost:3000/images/marker-shadow.png"}));
                         mrkrArr.push(centerMarker);
                                 
                         //tmp ola mark
                         var olaLoc = L.marker([parseFloat(centerLat),parseFloat(centerLong) - 0.01]);
                         olaLoc.bindPopup("Cab deatils <br> Driver Number: 8880195191 <br> Liscense : 893292922");
-                        olaLoc.setIcon(L.icon({iconUrl: '/img/ola.png',iconAnchor: [10, 30],shadowUrl: this.imageHost + "/images/marker-shadow.png"}));
+                        olaLoc.setIcon(L.icon({iconUrl: '/img/ola.png',iconAnchor: [10, 30],shadowUrl: "http://localhost:3000/images/marker-shadow.png"}));
                         mrkrArr.push(olaLoc);
                                 
                         var xmlhttprequest = new XMLHttpRequest();
@@ -253,6 +254,7 @@ oDropDownBox.placeAt('divs2');
                                             if(newJSON.total_fare!=undefined)
                                                 text = text + "<br>total fare: " + newJSON.total_fare;
                                             oMarker.bindPopup(text);
+                                            oMarker.setIcon(L.icon({iconUrl: 'http://localhost:3000/images/marker-shadow.png',iconAnchor: [10, 30],shadowUrl: "http://localhost:3000/images/marker-shadow.png"}));
                                             mrkrArr.push(oMarker);
                                         }
                                     }
